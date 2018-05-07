@@ -9,3 +9,6 @@ This is an LED lantern
 - Potentiometer for controlling the brightness
 - Momentary push button to switch between modes
 - animations.h contains more sequences that can fit in the ATtiny so only a handful is used
+- Powered by a single 18650 battery which can be charged via USB
+- Has four modes:
+-- White, green, red and animation
