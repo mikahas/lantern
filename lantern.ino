@@ -3,9 +3,9 @@
 #include <FastLED.h>
 #include "animations.h"
 
-#define BUTTON_PIN 1
+#define BUTTON_PIN 4
 #define POT_PIN A1
-#define LED_PIN    0
+#define LED_PIN    3
 #define NUM_LEDS    4
 #define DEFAULT_BRIGHTNESS  255
 #define LED_TYPE    WS2811
@@ -25,7 +25,7 @@ CRGBPalette16 animations[] = {
     halloween_gp, // *
     // blackhorse_gp,
     autumnrose_gp,  // *
-    // bambooblossom_gp,
+    bambooblossom_gp,
     // healingangel_gp,
     // Wild_Orange_gp,
     // Molten_lava_gp,
@@ -70,7 +70,7 @@ void loop() {
 
     switch (currentState) {
       case 1:
-        setColor(CRGB::White);
+        setColor(CRGB::Blue);
         break;
       case 2:
         setColor(CRGB::Green);
