@@ -10,19 +10,21 @@
 #define ENC_PIN_B   PINB1
 
 // LED setup
-#define NUM_LEDS            10
-#define BRIGHTNESS_DEFAULT  255
+#define NUM_LEDS            22
+#define BRIGHTNESS_DEFAULT  50
 #define BRIGHTNESS_MIN      10
 #define BRIGHTNESS_STEPS    25  // Rotary Encoder steps for adjusting brightness
-#define UPDATES_PER_SECOND  100
+#define UPDATES_PER_SECOND  120
 
-// Rotary encoder rotation directions
+// Rotary encoder & button
 #define INCREMENT true
 #define DECREMENT false
+#define DEBOUNCE_DELAY 15 // Milliseconds
 
 enum uiMenu {
   MENU_BRIGHTNESS = 1,
   MENU_ANIMATION = 2,
+  // TODO: Single LED selector?
 };
 
 uint8_t pulsesBrightness = 0;
@@ -31,9 +33,14 @@ uint8_t pulsesAnimation = 0;
 uint8_t currentAnimation = 0;
 uint8_t oldAnimation = 0;
 uint8_t currentMenu = MENU_BRIGHTNESS; // 1=brightness, 2=color/animation
-uint8_t oldButtonState = LOW;
+
+byte lastButtonPressState = LOW;
+unsigned long lastDebounceTime = 0;
+byte buttonActiveState = HIGH; // HIGH with INPUT_PULLUP means button is not pressed, LOW = pressed
+
 uint8_t currentBrightness = BRIGHTNESS_DEFAULT;
 uint8_t oldBrightness = BRIGHTNESS_DEFAULT;
+
 CRGBPalette16 currentPalette;
 CRGB leds[NUM_LEDS];
 
@@ -51,16 +58,16 @@ uint8_t colorCount = sizeof(colors) / sizeof(colors[0]);
 
 // All animations can't fit in Attiny85 so choose wisely
 CRGBPalette16 animations[] = {
-    halloween_gp, // *
-    // blackhorse_gp,
-    autumnrose_gp,  // *
+    //halloween_gp, // *
+    blackhorse_gp,
+    //autumnrose_gp,  // *
     // bambooblossom_gp,
-    // healingangel_gp,
+    //healingangel_gp,
     // Wild_Orange_gp,
     // Molten_lava_gp,
-    radioactive_slime_gp, // *
+    //radioactive_slime_gp, // *
     // bumblebee_gp,
-    bhw4_011_gp, // * 
+    //bhw4_011_gp, // * 
 };
 uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 
@@ -68,10 +75,11 @@ uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 uint8_t animationPulsesMax = 4 * (animationCount + colorCount) - 1;
 
 void setup(){
-  delay(1000); // power-up safety delay
-  pinMode(BUTTON_PIN, INPUT);
+  delay(500); // power-up safety delay
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+
   FastLED.setBrightness(BRIGHTNESS_DEFAULT);
   setColor(colors[0]);  // start with the first color in colors array
 
@@ -83,16 +91,28 @@ void setup(){
   sei();
 }
 
-void loop(){
+void loop() {
+  unsigned long currentTime = millis();
+  
   // Motion speed counter
   static uint8_t startIndex = 0;
   startIndex++;
 
   // Handle menu states
-  uint8_t buttonState = digitalRead(BUTTON_PIN);
-  if (buttonState == HIGH && oldButtonState == LOW) currentMenu++;
-  if (currentMenu > MENU_ANIMATION) currentMenu = MENU_BRIGHTNESS;
-  oldButtonState = buttonState;
+  byte buttonPressState = digitalRead(BUTTON_PIN);
+  if (buttonPressState != lastButtonPressState) lastDebounceTime = currentTime;
+
+  // Quick press handling
+    if ((currentTime - lastDebounceTime) > DEBOUNCE_DELAY &&
+      buttonActiveState != buttonPressState
+    ) {
+      buttonActiveState = buttonPressState;
+      if (buttonPressState == LOW) {    // button pressed
+        currentMenu++;
+        if (currentMenu > MENU_ANIMATION) currentMenu = MENU_BRIGHTNESS;
+      }
+    }
+    lastButtonPressState = buttonPressState;
 
   switch (currentMenu) {
     case MENU_BRIGHTNESS:
