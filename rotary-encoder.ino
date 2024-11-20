@@ -11,7 +11,7 @@
 
 // LED setup
 #define NUM_LEDS            22
-#define BRIGHTNESS_DEFAULT  50
+#define BRIGHTNESS_DEFAULT  5
 #define BRIGHTNESS_MIN      10
 #define BRIGHTNESS_STEPS    25  // Rotary Encoder steps for adjusting brightness
 #define UPDATES_PER_SECOND  120
@@ -27,7 +27,7 @@ enum uiMenu {
   // TODO: Single LED selector?
 };
 
-uint8_t pulsesBrightness = 0;
+uint8_t pulsesBrightness = BRIGHTNESS_DEFAULT;
 uint8_t pulsesAnimation = 0;
 
 uint8_t currentAnimation = 0;
@@ -38,8 +38,8 @@ byte lastButtonPressState = LOW;
 unsigned long lastDebounceTime = 0;
 byte buttonActiveState = HIGH; // HIGH with INPUT_PULLUP means button is not pressed, LOW = pressed
 
-uint8_t currentBrightness = BRIGHTNESS_DEFAULT;
-uint8_t oldBrightness = BRIGHTNESS_DEFAULT;
+uint8_t currentBrightness = 0;
+uint8_t oldBrightness = 0;
 
 CRGBPalette16 currentPalette;
 CRGB leds[NUM_LEDS];
@@ -59,35 +59,34 @@ uint8_t colorCount = sizeof(colors) / sizeof(colors[0]);
 // All animations can't fit in Attiny85 so choose wisely
 CRGBPalette16 animations[] = {
     //halloween_gp, // *
-    blackhorse_gp,
-    //autumnrose_gp,  // *
-    // bambooblossom_gp,
+    //blackhorse_gp,
+    autumnrose_gp,  // *
+    bambooblossom_gp,
     //healingangel_gp,
-    // Wild_Orange_gp,
+    Wild_Orange_gp,
     // Molten_lava_gp,
-    //radioactive_slime_gp, // *
+    radioactive_slime_gp, // *
     // bumblebee_gp,
     //bhw4_011_gp, // * 
 };
 uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 
-// One notch/step with rotary encoder equals 4 ticks
-uint8_t animationPulsesMax = 4 * (animationCount + colorCount) - 1;
-
+uint8_t animationPulsesMax = (animationCount + colorCount) - 1;
 void setup(){
+
   delay(500); // power-up safety delay
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
 
-  FastLED.setBrightness(BRIGHTNESS_DEFAULT);
+  FastLED.setBrightness(0);
   setColor(colors[0]);  // start with the first color in colors array
 
   pinMode(ENC_PIN_A, INPUT);
   pinMode(ENC_PIN_B, INPUT);
 
-  GIMSK = 0b00100000; // turns on pin change interrupts
-  PCMSK = 0b00000011; // turn on attiny interrupt pins: PB0, PB1
+  GIMSK = 0b00100000; // Turns on pin change interrupts
+  PCMSK = 0b00000011; // Turn on attiny interrupt pins: PB0, PB1
   sei();
 }
 
@@ -103,22 +102,23 @@ void loop() {
   if (buttonPressState != lastButtonPressState) lastDebounceTime = currentTime;
 
   // Quick press handling
-    if ((currentTime - lastDebounceTime) > DEBOUNCE_DELAY &&
-      buttonActiveState != buttonPressState
-    ) {
-      buttonActiveState = buttonPressState;
-      if (buttonPressState == LOW) {    // button pressed
-        currentMenu++;
-        if (currentMenu > MENU_ANIMATION) currentMenu = MENU_BRIGHTNESS;
-      }
+  if ((currentTime - lastDebounceTime) > DEBOUNCE_DELAY &&
+    buttonActiveState != buttonPressState
+  ) {
+    buttonActiveState = buttonPressState;
+    if (buttonPressState == LOW) {    // button pressed
+      currentMenu++;
+      if (currentMenu > MENU_ANIMATION) currentMenu = MENU_BRIGHTNESS;
     }
-    lastButtonPressState = buttonPressState;
+  }
+  lastButtonPressState = buttonPressState;
 
+  // Handle menu
   switch (currentMenu) {
     case MENU_BRIGHTNESS:
       currentBrightness = map(
         pulsesBrightness,
-        0, BRIGHTNESS_STEPS * 4,
+        0, BRIGHTNESS_STEPS,
         BRIGHTNESS_MIN, 255
       );
       if (currentBrightness != oldBrightness) {
@@ -127,7 +127,7 @@ void loop() {
       }
       break;
     case MENU_ANIMATION:
-      currentAnimation = pulsesAnimation/4;
+      currentAnimation = pulsesAnimation;
       break;
     default:
       break;
@@ -138,8 +138,8 @@ void loop() {
     FillLEDsFromPaletteColors(startIndex);
   } else if (currentAnimation != oldAnimation) {
     setColor(colors[currentAnimation]);
-    oldAnimation = currentAnimation;
   }
+  oldAnimation = currentAnimation; // Needed for making simple colors work
 
   FastLED.show();
   FastLED.delay(1000 / UPDATES_PER_SECOND);
@@ -161,19 +161,20 @@ void FillLEDsFromPaletteColors(uint8_t colorIndex) {
 // Handle rotary encoder interrupts
 volatile int lastEncoded = 0;
 ISR(PCINT0_vect) {
-  int MSB = digitalRead(ENC_PIN_A); //MSB = most significant bit, HIGH/LOW
-  int LSB = digitalRead(ENC_PIN_B); //LSB = least significant bit, HIGH/LOW
- 
-  int encoded = (MSB << 1) | LSB; //converting the 2 pin value to single number, 
-  int sum  = (lastEncoded << 2) | encoded; //adding it to the previous encoded value
- 
-  if(sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011)
-    handleStateCount(INCREMENT);
-  if(sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000)
-    handleStateCount(DECREMENT);
- 
-  lastEncoded = encoded; //store this value for next time
+  int currentStateCLK = digitalRead(ENC_PIN_B);
 
+  // If last and current state of CLK are different, then pulse occurred
+	// React to only 1 state change to avoid double count
+	if (currentStateCLK != lastEncoded && currentStateCLK == 1) {
+
+		// If the DT state is different than the CLK state then
+		// the encoder is rotating CCW so decrement
+		if (digitalRead(ENC_PIN_A) != currentStateCLK) handleStateCount(DECREMENT);
+		else handleStateCount(INCREMENT);
+	}
+
+	// Remember last CLK state
+	lastEncoded = currentStateCLK;
 }
 
 void handleStateCount(bool direction) {
@@ -181,7 +182,7 @@ void handleStateCount(bool direction) {
     case MENU_BRIGHTNESS:
       if (!direction && pulsesBrightness > 0) {
         pulsesBrightness--;
-      } else if (direction && pulsesBrightness < BRIGHTNESS_STEPS * 4) {
+      } else if (direction && pulsesBrightness < BRIGHTNESS_STEPS) {
         pulsesBrightness++;
       }
       break;
