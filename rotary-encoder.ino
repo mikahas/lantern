@@ -3,6 +3,7 @@
 #include <FastLED.h>
 #include "animations.h"
 
+// Run Attiny @ 8MHz if the LEDs are not lighting up properly!
 // Pins for Attiny85
 #define BUTTON_PIN  PINB4
 #define LED_PIN     PINB3
@@ -14,7 +15,7 @@
 #define BRIGHTNESS_DEFAULT  5
 #define BRIGHTNESS_MIN      10
 #define BRIGHTNESS_STEPS    25  // Rotary Encoder steps for adjusting brightness
-#define UPDATES_PER_SECOND  120
+#define UPDATES_PER_SECOND  100
 
 // Rotary encoder & button
 #define INCREMENT true
@@ -49,6 +50,7 @@ CRGB colors[] = {
   CRGB::White,
   CRGB::Blue,
   CRGB::Green,
+  CRGB::LimeGreen,
   CRGB::Yellow,
   CRGB::Purple,
   CRGB::Aqua,
@@ -61,14 +63,17 @@ CRGBPalette16 animations[] = {
     //halloween_gp, // *
     //blackhorse_gp,
     autumnrose_gp,  // *
+
+    radioactive_slime_gp, // *
     bambooblossom_gp,
     //healingangel_gp,
-    Wild_Orange_gp,
-    // Molten_lava_gp,
-    radioactive_slime_gp, // *
-    // bumblebee_gp,
+    //Wild_Orange_gp,
+    //Molten_lava_gp,
+    
+    //bumblebee_gp,
     //bhw4_011_gp, // * 
-};
+    //RainbowColors_p, // Fastled built in
+}; // NOTE: leave some dynamic memory! 
 uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 
 uint8_t animationPulsesMax = (animationCount + colorCount) - 1;
