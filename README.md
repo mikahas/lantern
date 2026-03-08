@@ -2,7 +2,7 @@
 
 A handheld LED lantern built around an ATtiny85 and WS2812B LEDs. Controlled by a rotary encoder and a button, powered by a single 18650 battery chargeable over USB.
 
-[Build photos](https://www.instagram.com/p/BiZ8sZbgN5C/)
+[Build photos](https://www.instagram.com/p/B86aNIAH3D4/)
 
 ## Features
 
