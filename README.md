@@ -4,6 +4,10 @@ A handheld LED lantern built around an ATtiny85 and WS2812B LEDs. Controlled by 
 
 [Build photos](https://www.instagram.com/p/B86aNIAH3D4/)
 
+## Story
+
+These lanterns are built from old sardine tin cans and some are given as gifts to a friend's children. They never survive the games for long — but that just means more repair sessions, sometimes with the kids themselves. Building, breaking, and fixing together is half the fun.
+
 ## Features
 
 - **Brightness control** — rotate the encoder to dim or brighten
