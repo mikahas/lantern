@@ -1,8 +1,4 @@
-
-// Gradient palette "halloween_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/halloween.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 16 bytes of program space.
+// Orange and black Halloween palette
 DEFINE_GRADIENT_PALETTE( halloween_gp ) {
     0, 173, 53,  1,
   127,   0,  0,  0,
@@ -10,10 +6,7 @@ DEFINE_GRADIENT_PALETTE( halloween_gp ) {
   255, 173, 53,  1
 };
 
-// Gradient palette "blackhorse_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/blackhorse.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 24 bytes of program space.
+// Deep blue and green night sky palette
 DEFINE_GRADIENT_PALETTE( blackhorse_gp ) {
     0,   8, 30,  1,
    53,  29, 99,237,
@@ -23,10 +16,7 @@ DEFINE_GRADIENT_PALETTE( blackhorse_gp ) {
   255,   8, 30,  1
 };
 
-// Gradient palette "rainbow_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/rainbow.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 48 bytes of program space.
+// Full spectrum rainbow palette
 DEFINE_GRADIENT_PALETTE( rainbow_gp ) {
     0, 126,  1,142,
    25, 171,  1, 26,
@@ -42,10 +32,7 @@ DEFINE_GRADIENT_PALETTE( rainbow_gp ) {
   255, 171,  1,190
 };
 
-// Gradient palette "otis_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/otis.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 16 bytes of program space.
+// Purple, green, and teal palette
 DEFINE_GRADIENT_PALETTE( otis_gp ) {
     0,  26,  1, 89,
   127,  17,193,  0,
@@ -53,10 +40,7 @@ DEFINE_GRADIENT_PALETTE( otis_gp ) {
   255,   0, 34, 98
 };
 
-// Gradient palette "autumnrose_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/autumnrose.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 32 bytes of program space.
+// Warm amber autumn palette
 DEFINE_GRADIENT_PALETTE( autumnrose_gp ) {
     0,  71,  3,  1,
    45, 128,  5,  2,
@@ -68,20 +52,14 @@ DEFINE_GRADIENT_PALETTE( autumnrose_gp ) {
   255, 247,161, 79
 };
 
-// Gradient palette "bambooblossom_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/bambooblossom.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 12 bytes of program space.
+// Green, pink, and magenta floral palette
 DEFINE_GRADIENT_PALETTE( bambooblossom_gp ) {
     0,  13, 44, 11,
   127, 215,108,151,
   255,  79, 22, 44
 };
 
-// Gradient palette "healingangel_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/healingangel.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 28 bytes of program space.
+// Soft blue and gold angelic palette
 DEFINE_GRADIENT_PALETTE( healingangel_gp ) {
     0,  94,156,174,
    45,  66,105,166,
@@ -92,10 +70,7 @@ DEFINE_GRADIENT_PALETTE( healingangel_gp ) {
   255, 210,221,123
 };
 
-// Gradient palette "teabearrose_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/teabearrose.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 68 bytes of program space.
+// Pink and rose warm palette
 DEFINE_GRADIENT_PALETTE( teabearrose_gp ) {
     0, 107,  1,  5,
    25, 165, 25, 45,
@@ -116,10 +91,7 @@ DEFINE_GRADIENT_PALETTE( teabearrose_gp ) {
   255, 107,  1,  5
 };
 
-// Gradient palette "Wild_Orange_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/lb/mp/tn/Wild_Orange.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 56 bytes of program space.
+// Bright orange and yellow fire palette
 DEFINE_GRADIENT_PALETTE( Wild_Orange_gp ) {
     0,   0,  0,  0,
     0, 144, 11,  1,
@@ -137,10 +109,7 @@ DEFINE_GRADIENT_PALETTE( Wild_Orange_gp ) {
   255, 255, 36,  1
 };
 
-// Gradient palette "Molten_lava_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/lb/mp/tn/Molten_lava.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 32 bytes of program space.
+// Deep red and orange lava palette
 DEFINE_GRADIENT_PALETTE( Molten_lava_gp ) {
     0,  40,  2,  1,
    17, 206, 30,  9,
@@ -152,10 +121,7 @@ DEFINE_GRADIENT_PALETTE( Molten_lava_gp ) {
   255, 220, 42,  4
 };
 
-// Gradient palette "radioactive_slime_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/jjg/neo10/faun/tn/radioactive-slime.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 80 bytes of program space.
+// Yellow-green toxic slime palette
 DEFINE_GRADIENT_PALETTE( radioactive_slime_gp ) {
     0, 255,233,102,
    25, 255,233,102,
@@ -179,10 +145,7 @@ DEFINE_GRADIENT_PALETTE( radioactive_slime_gp ) {
   255,   3, 27,  3
 };
 
-// Gradient palette "bumblebee_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/ocal/tn/bumblebee.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 48 bytes of program space.
+// Yellow and black bumblebee palette
 DEFINE_GRADIENT_PALETTE( bumblebee_gp ) {
     0, 255,255,  0,
    12, 255,255,  0,
@@ -198,10 +161,7 @@ DEFINE_GRADIENT_PALETTE( bumblebee_gp ) {
   255, 255,255,  0
 };
 
-// Gradient palette "bhw4_014_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw4/tn/bhw4_014.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 40 bytes of program space.
+// Earthy brown, orange, and grey palette
 DEFINE_GRADIENT_PALETTE( bhw4_014_gp ) {
     0,  25, 40, 35,
    15, 113,125,115,
@@ -215,10 +175,7 @@ DEFINE_GRADIENT_PALETTE( bhw4_014_gp ) {
   255,  86, 80, 80
 };
 
-// Gradient palette "bhw4_011_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw4/tn/bhw4_011.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 52 bytes of program space.
+// Warm amber and gold flame palette
 DEFINE_GRADIENT_PALETTE( bhw4_011_gp ) {
     0,  47,  5,  1,
    35, 222, 59,  6,
@@ -234,4 +191,3 @@ DEFINE_GRADIENT_PALETTE( bhw4_011_gp ) {
   232, 161, 36,  3,
   255, 255,141, 29
 };
-
