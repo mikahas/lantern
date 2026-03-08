@@ -28,16 +28,16 @@ enum uiMenu {
   // TODO: Single LED selector?
 };
 
-uint8_t pulsesBrightness = BRIGHTNESS_DEFAULT;
-uint8_t pulsesAnimation = 0;
+volatile uint8_t pulsesBrightness = BRIGHTNESS_DEFAULT;
+volatile uint8_t pulsesAnimation = 0;
 
 uint8_t currentAnimation = 0;
 uint8_t oldAnimation = 0;
 uint8_t currentMenu = MENU_BRIGHTNESS; // 1=brightness, 2=color/animation
 
-byte lastButtonPressState = LOW;
+uint8_t lastButtonPressState = LOW;
 unsigned long lastDebounceTime = 0;
-byte buttonActiveState = HIGH; // HIGH with INPUT_PULLUP means button is not pressed, LOW = pressed
+uint8_t buttonActiveState = HIGH; // HIGH with INPUT_PULLUP means button is not pressed, LOW = pressed
 
 uint8_t currentBrightness = 0;
 uint8_t oldBrightness = 0;
@@ -45,7 +45,7 @@ uint8_t oldBrightness = 0;
 CRGBPalette16 currentPalette;
 CRGB leds[NUM_LEDS];
 
-CRGB colors[] = {
+const CRGB colors[] = {
   CRGB::Red,
   CRGB::White,
   CRGB::Blue,
@@ -90,8 +90,8 @@ void setup(){
   pinMode(ENC_PIN_A, INPUT);
   pinMode(ENC_PIN_B, INPUT);
 
-  GIMSK = 0b00100000; // Turns on pin change interrupts
-  PCMSK = 0b00000011; // Turn on attiny interrupt pins: PB0, PB1
+  GIMSK |= _BV(PCIE);                    // Turns on pin change interrupts
+  PCMSK |= _BV(PCINT0) | _BV(PCINT1);   // Turn on attiny interrupt pins: PB0, PB1
   sei();
 }
 
@@ -103,7 +103,7 @@ void loop() {
   startIndex++;
 
   // Handle menu states
-  byte buttonPressState = digitalRead(BUTTON_PIN);
+  uint8_t buttonPressState = digitalRead(BUTTON_PIN);
   if (buttonPressState != lastButtonPressState) lastDebounceTime = currentTime;
 
   // Quick press handling
@@ -164,9 +164,9 @@ void FillLEDsFromPaletteColors(uint8_t colorIndex) {
 }
 
 // Handle rotary encoder interrupts
-volatile int lastEncoded = 0;
+volatile uint8_t lastEncoded = 0;
 ISR(PCINT0_vect) {
-  int currentStateCLK = digitalRead(ENC_PIN_B);
+  uint8_t currentStateCLK = digitalRead(ENC_PIN_B);
 
   // If last and current state of CLK are different, then pulse occurred
 	// React to only 1 state change to avoid double count

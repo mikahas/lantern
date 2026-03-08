@@ -11,13 +11,15 @@
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 #define UPDATES_PER_SECOND 100
+#define DEBOUNCE_DELAY 15
 
 uint8_t currentAnimation = 0;
 uint8_t currentState = 1; // 1 - 4
-uint8_t oldButtonState = LOW;
+uint8_t lastButtonRawState = LOW;
+uint8_t buttonActiveState = LOW;
+unsigned long lastDebounceTime = 0;
 
 CRGBPalette16 currentPalette;
-TBlendType    currentBlending;
 
 CRGB leds[NUM_LEDS];
 
@@ -31,16 +33,16 @@ CRGBPalette16 animations[] = {
     // Molten_lava_gp,
     radioactive_slime_gp, // *
     // bumblebee_gp,
-    bhw4_011_gp // * 
+    bhw4_011_gp // *
 };
+#define NUM_ANIMATIONS (sizeof(animations) / sizeof(animations[0]))
 
 void setup() {
     delay(1000); // power-up safety delay
     pinMode(POT_PIN, INPUT);
     pinMode(BUTTON_PIN, INPUT);
-    FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+    FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.setBrightness(DEFAULT_BRIGHTNESS);
-    currentBlending = LINEARBLEND;
 }
 
 
@@ -48,19 +50,23 @@ void loop() {
     static uint8_t startIndex = 0;
     startIndex = startIndex + 1; /* motion speed */
 
-    int buttonState = digitalRead(BUTTON_PIN);
+    unsigned long currentTime = millis();
+    uint8_t buttonState = digitalRead(BUTTON_PIN);
 
-    if (buttonState == HIGH && oldButtonState == LOW) {
-      currentState++;
-      
+    if (buttonState != lastButtonRawState) lastDebounceTime = currentTime;
+    lastButtonRawState = buttonState;
+
+    if ((currentTime - lastDebounceTime) > DEBOUNCE_DELAY && buttonActiveState != buttonState) {
+      buttonActiveState = buttonState;
+      if (buttonState == HIGH) currentState++;
     }
-    
+
     if (currentState > 4) {
       currentAnimation++;
       currentState = 1;
     }
 
-    if (currentAnimation >= 4) currentAnimation = 0;
+    if (currentAnimation >= NUM_ANIMATIONS) currentAnimation = 0;
 
     currentPalette = animations[currentAnimation];
     
@@ -85,8 +91,6 @@ void loop() {
         break;
     }
 
-    oldButtonState = buttonState;
-
     FastLED.show();
     FastLED.delay(1000 / UPDATES_PER_SECOND);
 }
@@ -97,11 +101,9 @@ void setColor(CRGB color) {
   }
 }
 
-void FillLEDsFromPaletteColors( uint8_t colorIndex) {
-    uint8_t brightness = 255;
-    
-    for( int i = 0; i < NUM_LEDS; i++) {
-        leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
-        colorIndex += 3;
-    }
+void FillLEDsFromPaletteColors(uint8_t colorIndex) {
+  for (uint8_t i = 0; i < NUM_LEDS; i++) {
+    leds[i] = ColorFromPalette(currentPalette, colorIndex, 255, LINEARBLEND);
+    colorIndex += 3;
+  }
 }
